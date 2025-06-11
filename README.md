@@ -34,8 +34,8 @@ Create a `.env` file in the project root with the following entries:
 ```env
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-VITE_ADMIN_EMAIL=info@beardsley.com
-VITE_ADMIN_PASSWORD=B3ARd$L3YY
+VITE_ADMIN_EMAIL=admin_email
+VITE_ADMIN_PASSWORD=admin_password
 ```
 
 These values are used for Supabase integration and admin login.
