@@ -72,10 +72,5 @@ Admin features include adding, editing, deleting, importing, and exporting proje
 
 This project is built with Vite and can be deployed on services like Vercel or Netlify. Be sure to configure environment variables in the deployment settings to match your local `.env` values.
 
-## License
-
-MIT License
-
----
 
 Created by Samantha Brown
