@@ -377,6 +377,27 @@ const ProjectPage: React.FC<ProjectPageProps> = ({
                     <p className="text-gray-900 font-medium text-lg sm:text-xl">{project.buildingType}</p>
                   </div>
                 )}
+
+                {/* Project Value - Only show to admins */}
+                {isAdminMode && project.compensation > 0 && (
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <DollarSign className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-600">Project Value</span>
+                    </div>
+                    <p className="text-gray-900 font-medium text-lg">${project.compensation.toLocaleString()}</p>
+                  </div>
+                )}
+
+                {project.year && (
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <Calendar className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-600">Year</span>
+                    </div>
+                    <p className="text-gray-900 font-medium">{project.year}</p>
+                  </div>
+                )}
               </div>
             </div>
 

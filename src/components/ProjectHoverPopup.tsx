@@ -5,9 +5,14 @@ import { MARKET_SECTORS } from '../data/marketSectors';
 interface ProjectHoverPopupProps {
   project: Project;
   position: { x: number; y: number };
+  isAdminMode?: boolean;
 }
 
-const ProjectHoverPopup: React.FC<ProjectHoverPopupProps> = ({ project, position }) => {
+const ProjectHoverPopup: React.FC<ProjectHoverPopupProps> = ({ 
+  project, 
+  position, 
+  isAdminMode = false 
+}) => {
   const getSectorInfo = (marketSector: string) => {
     return MARKET_SECTORS.find(s => s.id === marketSector) || MARKET_SECTORS[0];
   };
@@ -16,7 +21,7 @@ const ProjectHoverPopup: React.FC<ProjectHoverPopupProps> = ({ project, position
 
   // Much larger offsets to ensure popup never overlaps with clickable area
   const popupWidth = 280;
-  const popupHeight = project.imageUrls.length > 0 ? 100 : 100;
+  const popupHeight = project.imageUrls.length > 0 ? 120 : 120;
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
   
@@ -89,9 +94,23 @@ const ProjectHoverPopup: React.FC<ProjectHoverPopupProps> = ({ project, position
           </div>
           
           {/* Project Title */}
-          <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">
+          <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2 mb-1">
             {project.title}
           </h3>
+          
+          {/* Mini Description - Show if available */}
+          {project.miniDescription && (
+            <p className="text-xs text-gray-600 line-clamp-2 mb-1">
+              {project.miniDescription}
+            </p>
+          )}
+
+          {/* Project Value - Only show to admins */}
+          {isAdminMode && project.compensation > 0 && (
+            <p className="text-xs text-green-600 font-medium">
+              ${project.compensation.toLocaleString()}
+            </p>
+          )}
         </div>
       </div>
     </div>

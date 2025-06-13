@@ -21,6 +21,7 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ onClose, onAddProject
     marketSector: 'commercial',
     buildingType: '',
     description: '',
+    miniDescription: '',
     client: '',
     projectManager: '',
     status: 'Active' as const,
@@ -108,6 +109,7 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ onClose, onAddProject
         marketSector: formData.marketSector,
         buildingType: formData.buildingType || undefined,
         description: formData.description,
+        miniDescription: formData.miniDescription || undefined,
         imageUrls: formData.imageUrls,
         client: formData.client,
         projectManager: formData.projectManager,
@@ -236,19 +238,38 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ onClose, onAddProject
             </div>
 
             {/* Project Details */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description *
-              </label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                required
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6d0020] focus:border-transparent text-base resize-none"
-                placeholder="Project description"
-              />
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mini Description
+                </label>
+                <textarea
+                  name="miniDescription"
+                  value={formData.miniDescription}
+                  onChange={handleInputChange}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6d0020] focus:border-transparent text-base resize-none"
+                  placeholder="Brief description for hover cards (optional)"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Optional - Short description shown on map hover cards
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Description *
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  required
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6d0020] focus:border-transparent text-base resize-none"
+                  placeholder="Full project description"
+                />
+              </div>
             </div>
 
             {/* Client and Project Manager */}

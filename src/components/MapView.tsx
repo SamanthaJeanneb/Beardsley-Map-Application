@@ -95,6 +95,7 @@ const MapView: React.FC<MapViewProps> = ({
   } | null>(null);
   const mapRef = useRef<any>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout>();
+  const radialMenuTimeoutRef = useRef<NodeJS.Timeout>();
 
   const getMarkerColor = (marketSector: string) => {
     const sector = MARKET_SECTORS.find((s) => s.id === marketSector);
@@ -153,9 +154,13 @@ const MapView: React.FC<MapViewProps> = ({
   };
 
   const handleMarkerClick = (projectGroup: Project[], event: any) => {
+    // Clear any existing hover states and timeouts
     setHoveredProject(null);
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
+    }
+    if (radialMenuTimeoutRef.current) {
+      clearTimeout(radialMenuTimeoutRef.current);
     }
 
     const targetEl = event.originalEvent?.target;
@@ -180,11 +185,16 @@ const MapView: React.FC<MapViewProps> = ({
   };
 
   const handleMarkerMouseEnter = (projectGroup: Project[], event: any) => {
+    // Clear any existing timeouts
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
+    if (radialMenuTimeoutRef.current) {
+      clearTimeout(radialMenuTimeoutRef.current);
+    }
 
     if (projectGroup.length === 1) {
+      // Single project - show hover popup after delay
       hoverTimeoutRef.current = setTimeout(() => {
         const rect = mapRef.current.getContainer().getBoundingClientRect();
         const x = event.originalEvent.clientX - rect.left;
@@ -195,14 +205,30 @@ const MapView: React.FC<MapViewProps> = ({
           position: { x, y },
         });
       }, 300);
+    } else {
+      // Multiple projects - show radial menu after delay
+      radialMenuTimeoutRef.current = setTimeout(() => {
+        const rect = mapRef.current.getContainer().getBoundingClientRect();
+        const x = event.originalEvent.clientX - rect.left;
+        const y = event.originalEvent.clientY - rect.top;
+
+        setRadialMenuPosition({ x, y });
+        setClusteredProjects(projectGroup);
+        setShowRadialMenu(true);
+      }, 500); // Slightly longer delay for multiple projects
     }
   };
 
   const handleMarkerMouseLeave = () => {
+    // Clear timeouts but don't immediately hide - let the timeout handle it
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
+    if (radialMenuTimeoutRef.current) {
+      clearTimeout(radialMenuTimeoutRef.current);
+    }
 
+    // Set a timeout to hide hover popup
     hoverTimeoutRef.current = setTimeout(() => {
       setHoveredProject(null);
     }, 100);
@@ -210,12 +236,18 @@ const MapView: React.FC<MapViewProps> = ({
 
   const closeRadialMenu = () => {
     setShowRadialMenu(false);
+    if (radialMenuTimeoutRef.current) {
+      clearTimeout(radialMenuTimeoutRef.current);
+    }
   };
 
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current);
+      }
+      if (radialMenuTimeoutRef.current) {
+        clearTimeout(radialMenuTimeoutRef.current);
       }
     };
   }, []);
@@ -287,6 +319,7 @@ const MapView: React.FC<MapViewProps> = ({
         <ProjectHoverPopup
           project={hoveredProject.project}
           position={hoveredProject.position}
+          isAdminMode={isAdminMode}
         />
       )}
 
@@ -297,6 +330,7 @@ const MapView: React.FC<MapViewProps> = ({
             projects={clusteredProjects}
             onSelectProject={onProjectSelect}
             onClose={closeRadialMenu}
+            isAdminMode={isAdminMode}
           />
         </div>
       )}

@@ -7,6 +7,7 @@ export interface Project {
   marketSector: string;
   buildingType?: string; // New optional field
   description: string;
+  miniDescription?: string; // New optional field for short descriptions
   imageUrls: string[];
   client: string;
   projectManager: string;

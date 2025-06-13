@@ -11,12 +11,14 @@ export const MARKET_SECTORS: MarketSector[] = [
   { id: 'professional', name: 'Professional Offices', color: '#64748b' },
   { id: 'industrial', name: 'Industrial/Manufacturing', color: '#ea580c' },
   { id: 'research', name: 'Research and Development', color: '#8b5cf6' },
+  { id: 'custom-homes', name: 'Custom Homes', color: '#be185d' },
 ];
 
 export const getMarketSectorFromDescription = (description: string): string => {
   const desc = description.toLowerCase();
   
   if (desc.includes('housing') || desc.includes('residential')) return 'housing';
+  if (desc.includes('custom homes') || desc.includes('custom home')) return 'custom-homes';
   if (desc.includes('parks') || desc.includes('recreation')) return 'parks';
   if (desc.includes('industrial') || desc.includes('manufacturing')) return 'industrial';
   if (desc.includes('academic') || desc.includes('education')) return 'education';

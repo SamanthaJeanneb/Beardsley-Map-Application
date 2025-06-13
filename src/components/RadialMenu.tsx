@@ -8,6 +8,7 @@ interface RadialMenuProps {
   projects: Project[];
   onSelectProject: (project: Project) => void;
   onClose: () => void;
+  isAdminMode?: boolean;
 }
 
 const RadialMenu: React.FC<RadialMenuProps> = ({
@@ -15,6 +16,7 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
   projects,
   onSelectProject,
   onClose,
+  isAdminMode = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -111,7 +113,10 @@ const RadialMenu: React.FC<RadialMenuProps> = ({
                   <p className="text-sm text-gray-500 mb-1 truncate">{project.client}</p>
                   <div className="flex items-center justify-between text-xs text-gray-400">
                     <span className="truncate">{getSectorName(project.marketSector)}</span>
-                    <span className="ml-2 flex-shrink-0">${project.compensation.toLocaleString()}</span>
+                    {/* Only show project value to admins */}
+                    {isAdminMode && (
+                      <span className="ml-2 flex-shrink-0">${project.compensation.toLocaleString()}</span>
+                    )}
                   </div>
                 </div>
               </div>

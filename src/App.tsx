@@ -186,7 +186,7 @@ function App() {
   const handleCSVImport = async (file: File) => {
     try {
       setError(null);
-      const importedProjects = await parseCSV(file);
+      const importedProjects = await parseCSV(file, projects); // Pass existing projects for duplicate detection
       await projectDB.bulkAdd(importedProjects);
       const updatedProjects = await projectDB.getAll();
       setProjects(updatedProjects);

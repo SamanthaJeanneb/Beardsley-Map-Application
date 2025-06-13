@@ -49,7 +49,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     setProcessingCount(0);
   };
 
-  const removeImage = (index: number) => {
+  const removeImage = (index: number, e?: React.MouseEvent) => {
+    // Prevent event bubbling to avoid triggering file input
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     const newImages = images.filter((_, i) => i !== index);
     onImagesChange(newImages);
   };
@@ -66,14 +72,30 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     e.preventDefault();
   };
 
+  const handleUploadAreaClick = () => {
+    if (!uploading) {
+      fileInputRef.current?.click();
+    }
+  };
+
+  const handleAddMoreClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!uploading) {
+      fileInputRef.current?.click();
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Upload Area */}
       <div
-        className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer"
+        className={`border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors ${
+          uploading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+        }`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={handleUploadAreaClick}
       >
         <input
           ref={fileInputRef}
@@ -82,6 +104,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           accept="image/*"
           onChange={(e) => e.target.files && handleFileSelect(e.target.files)}
           className="hidden"
+          disabled={uploading}
         />
         
         <div className="space-y-2">
@@ -119,11 +142,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 />
               </div>
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  removeImage(index);
-                }}
-                className="absolute -top-2 -right-2 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => removeImage(index, e)}
+                className="absolute -top-2 -right-2 p-1 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                type="button"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -133,7 +154,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
           {/* Add more button */}
           {images.length < maxImages && !uploading && (
             <button
-              onClick={() => fileInputRef.current?.click()}
+              onClick={handleAddMoreClick}
+              type="button"
               className="aspect-square rounded-lg border-2 border-dashed border-gray-300 hover:border-gray-400 flex items-center justify-center transition-colors"
             >
               <div className="text-center">
